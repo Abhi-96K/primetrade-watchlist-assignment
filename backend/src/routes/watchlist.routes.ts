@@ -15,6 +15,7 @@ router.get('/', WatchlistController.getItems);
 
 // Admin-only stats endpoint. Placing before '/:id' to avoid router clash
 router.get('/admin/stats', authorize(['ADMIN']), WatchlistController.getAdminStats);
+router.patch('/admin/users/:id/role', authorize(['ADMIN']), WatchlistController.updateUserRole);
 
 router.get('/:id', WatchlistController.getItemById);
 router.put('/:id', validate(updateWatchlistItemSchema), WatchlistController.updateItem);

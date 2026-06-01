@@ -94,5 +94,22 @@ class WatchlistService {
             recentWatchlist,
         };
     }
+    static async updateUserRole(id, role, requesterId) {
+        if (id === requesterId && role === 'USER') {
+            const err = new Error('You cannot demote yourself from Admin status');
+            err.statusCode = 400;
+            throw err;
+        }
+        return db_1.prisma.user.update({
+            where: { id },
+            data: { role },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+            },
+        });
+    }
 }
 exports.WatchlistService = WatchlistService;

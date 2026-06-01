@@ -12,7 +12,6 @@ export const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'USER' | 'ADMIN'>('USER');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +32,7 @@ export const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await response.json();
@@ -103,21 +102,6 @@ export const Register: React.FC<RegisterProps> = ({ onNavigateToLogin }) => {
               disabled={isSubmitting}
               required
             />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label" htmlFor="role">ACCOUNT PRIVILEGE ROLE</label>
-            <select
-              id="role"
-              className="form-input"
-              value={role}
-              onChange={(e) => setRole(e.target.value as 'USER' | 'ADMIN')}
-              style={{ backgroundColor: 'var(--bg-deep)' }}
-              disabled={isSubmitting}
-            >
-              <option value="USER">Standard User (DCA & Asset Watchlist)</option>
-              <option value="ADMIN">System Admin (Full Access & Insights)</option>
-            </select>
           </div>
 
           <button

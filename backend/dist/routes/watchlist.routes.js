@@ -13,6 +13,7 @@ router.post('/', (0, validationMiddleware_1.validate)(watchlist_schema_1.createW
 router.get('/', watchlist_controller_1.WatchlistController.getItems);
 // Admin-only stats endpoint. Placing before '/:id' to avoid router clash
 router.get('/admin/stats', (0, roleMiddleware_1.authorize)(['ADMIN']), watchlist_controller_1.WatchlistController.getAdminStats);
+router.patch('/admin/users/:id/role', (0, roleMiddleware_1.authorize)(['ADMIN']), watchlist_controller_1.WatchlistController.updateUserRole);
 router.get('/:id', watchlist_controller_1.WatchlistController.getItemById);
 router.put('/:id', (0, validationMiddleware_1.validate)(watchlist_schema_1.updateWatchlistItemSchema), watchlist_controller_1.WatchlistController.updateItem);
 router.delete('/:id', watchlist_controller_1.WatchlistController.deleteItem);

@@ -88,5 +88,28 @@ class WatchlistController {
             next(error);
         }
     }
+    static async updateUserRole(req, res, next) {
+        try {
+            const { id } = req.params;
+            const { role } = req.body;
+            const requesterId = req.user.id;
+            if (role !== 'USER' && role !== 'ADMIN') {
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid role. Must be USER or ADMIN.',
+                });
+                return;
+            }
+            const result = await watchlist_service_1.WatchlistService.updateUserRole(id, role, requesterId);
+            res.status(200).json({
+                success: true,
+                message: `User role updated successfully to ${role}`,
+                data: result,
+            });
+        }
+        catch (error) {
+            next(error);
+        }
+    }
 }
 exports.WatchlistController = WatchlistController;

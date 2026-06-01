@@ -229,6 +229,42 @@ export const Dashboard: React.FC = () => {
     }
   };
 
+  // Admin User Role Management Action
+  const handleToggleUserRole = async (targetUserId: string, currentRole: string) => {
+    const newRole = currentRole === 'ADMIN' ? 'USER' : 'ADMIN';
+    const confirmMessage = currentRole === 'ADMIN'
+      ? 'Are you sure you want to demote this Admin back to a standard User?'
+      : 'Are you sure you want to promote this User to an Admin?';
+
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5001/api/v1/watchlist/admin/users/${targetUserId}/role`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ role: newRole }),
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        showToast(`User role successfully changed to ${newRole}!`, 'success');
+        await loadAllData();
+      } else {
+        showToast(data.message || 'Failed to update user role', 'error');
+      }
+    } catch (err) {
+      showToast('Network error while modifying user role', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Helper formatting utility
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -438,6 +474,7 @@ export const Dashboard: React.FC = () => {
                     <th>ROLE CLEARANCE</th>
                     <th>TRACKED COINS</th>
                     <th>REGISTRATION STAMP</th>
+                    <th style={{ textAlign: 'right' }}>ROLE ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -456,6 +493,22 @@ export const Dashboard: React.FC = () => {
                       <td style={{ fontWeight: 700 }}>{u._count.watchlist} assets</td>
                       <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                         {new Date(u.createdAt).toLocaleString()}
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        {u.id === user?.id ? (
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                            (Current Session)
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handleToggleUserRole(u.id, u.role)}
+                            className={`btn ${u.role === 'ADMIN' ? 'btn-danger' : 'btn-secondary'} btn-sm`}
+                            style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
+                            disabled={isLoading}
+                          >
+                            {u.role === 'ADMIN' ? '👤 Demote' : '🛡️ Make Admin'}
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
