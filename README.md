@@ -136,3 +136,4 @@ cd frontend
 2. **Sanitization**: Dynamic SQL injection protection via Prisma parameter binding, and deep JSON validation via Zod.
 3. **Access Controls**: Multi-tier security middleware ensuring standard users can only view and modify their own watchlists, while elevating dashboard permissions for system admins.
 4. **Rate Limiting**: Custom limits (200 requests / 15 minutes) prevent route bombardment and API abuse.
+5. **Rate Limiting**: Custom limits (200 requests / 15 minutes) prevent route bombardment and API abuse.
